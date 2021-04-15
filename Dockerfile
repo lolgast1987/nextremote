@@ -1,4 +1,5 @@
-FROM node:10-alpine
+## Builder
+FROM node:10-alpine AS build
 
 WORKDIR /opt
 
@@ -10,9 +11,11 @@ RUN apk add --no-cache --no-progress git \
 
 WORKDIR /opt/nextremote
 
-RUN npm install \
-	&& rm -rf /tmp/*
+RUN npm install
+## 
 
+FROM node:10-alpine
+COPY --from=build /opt/nextremote /opt/nextremote
+WORKDIR /opt/nextremote
 EXPOSE 8080
-
 CMD ["npm", "start"]
